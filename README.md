@@ -17,6 +17,8 @@ bat https://github.com/sharkdp/bat
 
 ripgrep https://github.com/BurntSushi/ripgrep
 
+taskwarrior https://github.com/GothenburgBitFactory/taskwarrior
+
 ranger https://github.com/ranger/ranger
 
 fzf https://github.com/junegunn/fzf
