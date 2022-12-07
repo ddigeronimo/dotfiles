@@ -1,16 +1,14 @@
 # Installation
-Run `chezmoi init https://github.com/$GITHUB_USERNAME/dotfiles.git`
+Run `sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ddigeronimo`
 
 # Favorite software
 
 These are some of my favorite applications that I use day to day.
-
 Ideally, these will be installed on a new machine before running the chezmoi install, but they aren't prerequisites.
-
 Without them, some errors may get thrown as some of the configs in my dotfiles reference them.
-
 For example, my .zshrc will try to source fzf config files that may not yet be installed.
 
+kakoune https://github.com/mawww/kakoune
 
 bat https://github.com/sharkdp/bat
 
