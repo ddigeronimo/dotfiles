@@ -1,0 +1,182 @@
+# kak-plug
+source "%val{config}/plugins/plug.kak/rc/plug.kak"
+plug "andreyorst/plug.kak" noload
+
+plug "kak-lsp/kak-lsp" do %{
+    #cargo --config net.git-fetch-with-cli=true fetch
+    cargosymotion build --release --locked
+    cargo install --force --path .
+} config %{
+    # uncomment to enable debugging
+    # eval %sh{echo ${kak_opt_lsp_cmd} >> /tmp/kak-lsp.log}
+    # set global lsp_cmd "kak-lsp -s %val{session} -vvv --log /tmp/kak-lsp.log"
+
+    set-option global lsp_completion_trigger "execute-keys 'h<a-h><a-k>\S[^\h\n,=;*(){}\[\]]\z<ret>'"
+    set global lsp_diagnostic_line_error_sign '!'
+    set global lsp_diagnostic_line_warning_sign '?'
+
+    define-command ne -docstring 'go to next error/warning from lsp' %{ lsp-find-error --include-warnings }
+    define-command pe -docstring 'go to previous error/warning from lsp' %{ lsp-find-error --previous --include-warnings }
+    define-command ee -docstring 'go to current error/warning from lsp' %{ lsp-find-error --include-warnings; lsp-find-error --previous --include-warnings }
+
+    define-command lsp-restart -docstring 'restart lsp server' %{ lsp-stop; lsp-start }
+    hook global WinSetOption filetype=(go|python|javascript|typescript) %{
+        lsp-enable-window
+        lsp-auto-hover-enable
+        lsp-auto-hover-insert-mode-disable
+        lsp-inlay-hints-enable window
+        #lsp-inlay-diagnostics-enable window
+
+        set-option window lsp_auto_highlight_references true
+        set-option window lsp_auto_show_code_actions true
+        set-option window lsp_insert_spaces true
+        set-option window lsp_hover_anchor false
+
+        # attempt at adding color to lsp sections:
+        # set-option window modelinefmt '%opt{lsp_modeline_code_actions} %opt{lsp_modeline_progress} {DiagnosticWarning}%opt{lsp_diagnostic_line_warning_sign}: %opt{lsp_diagnostic_warning_count} {Error}%opt{lsp_diagnostic_line_error_sign}: %opt{lsp_diagnostic_error_count}{Default} %val{bufname} %val{cursor_line}:%val{cursor_char_column} {{context_info}} {{mode_info}} - %val{client}@[%val{session}]'
+        set-option window modelinefmt '%opt{lsp_modeline_code_actions} %opt{lsp_modeline_progress} %opt{lsp_diagnostic_line_warning_sign}:%opt{lsp_diagnostic_warning_count} %opt{lsp_diagnostic_line_error_sign}:%opt{lsp_diagnostic_error_count} {rgb:C586C0}%val{bufname}{default} {green}%val{cursor_line}:%val{cursor_char_column}{default} {{context_info}} {{mode_info}} - {bright-cyan}%val{client}@[%val{session}]{default}'
+
+        map global user l %{:enter-user-mode lsp<ret>} -docstring "LSP mode"
+        map global insert <tab> '<a-;>:try lsp-snippets-select-next-placeholders catch %{ execute-keys -with-hooks <lt>tab> }<ret>' -docstring 'Select next snippet placeholder'
+        map global object a '<a-;>lsp-object<ret>' -docstring 'LSP any symbol'
+        map global object <a-a> '<a-;>lsp-object<ret>' -docstring 'LSP any symbol'
+        map global object e '<a-;>lsp-object Function Method<ret>' -docstring 'LSP function or method'
+        map global object k '<a-;>lsp-object Class Interface Struct<ret>' -docstring 'LSP class interface or struct'
+    }
+
+    hook global KakEnd .* lsp-exit
+}
+
+plug "andreyorst/fzf.kak" config %{
+    map global user f ': fzf-mode<ret>' -docstring 'fzf-mode'
+} defer "fzf-file" %{
+    set-option global fzf_file_command 'fd'
+    set-option global fzf_highlight_command 'bat'
+    #set-option global fzf_preview_width: 50%
+} defer "fzf-grep" %{
+    set-option global fzf_grep_command 'rg'
+    set-option global fzf_highlight_command 'bat'
+}
+
+plug "h-youhei/kakoune-surround" config %{
+    declare-user-mode surround
+    map global surround s ':surround<ret>' -docstring 'surround'
+    map global surround c ':change-surround<ret>' -docstring 'change surround'
+    map global surround d ':delete-surround<ret>' -docstring 'delete surround'
+    map global surround l ':select-surround<ret>' -docstring 'select surround'
+    map global surround S ':surround-with-tag<ret>' -docstring 'surround with tag'
+    map global surround C ':change-surrounding-tag<ret>' -docstring 'change tag'
+    map global surround D ':delete-surrounding-tag<ret>' -docstring 'delete tag'
+    map global surround L ':select-surrounding-tag<ret>' -docstring 'select tag'
+    map global user s ':enter-user-mode surround<ret>' -docstring 'surround-mode'
+}
+
+plug "maximbaz/restclient.kak" defer restclient %{
+    #set-option global restclient_copy_command 'win32yank.exe -i'
+    set-option global restclient_copy_command 'clip.exe'
+}
+
+plug "danr/kakoune-easymotion" config %{
+    map global user <space> ':enter-user-mode easymotion<ret>' -docstring 'easymotion-mode'
+}
+
+plug "caksoylar/kakoune-focus" config %{
+    map global user , ':focus-toggle<ret>' -docstring "toggle selections focus"
+
+    define-command focus-live-enable %{
+        focus-selections
+        hook -group focus window NormalIdle .* %{ focus-extend }
+    }
+    define-command focus-live-disable %{
+        remove-hooks window focus
+        focus-clear
+    }
+}
+
+# colorscheme codedark
+colorscheme desertex
+
+set-option global modelinefmt '{rgb:C586C0}%val{bufname}{default} {green}%val{cursor_line}:%val{cursor_char_column}{default} {{context_info}} {{mode_info}} - {bright-cyan}%val{client}@[%val{session}]{default}'
+
+# Enable line numbers
+add-highlighter global/ number-lines -relative -hlcursor
+
+# Display the status bar on top and don't write filename and line num to terminal title
+set-option global ui_options terminal_status_on_top=true terminal_set_title=false
+
+# if not configured per file type, set tabs as 4 spaces
+set-option global tabstop 4
+set-option global indentwidth 4
+# ...unless it's a YAML file
+hook global WinSetOption filetype=(yaml) %{
+    set-option window tabstop 2
+    set-option window indentwidth 2
+}
+
+set-option global grepcmd 'rg -uu'
+
+# insert 4 spaces on tab key
+hook global InsertChar \t %{ exec -draft -itersel h@ } -group kakrc-replace-tabs-with-spaces
+
+# Override tab and s-tab when the completion menu is showing to toggle completions
+hook global InsertCompletionShow .* %{
+    try %{
+        # this command temporarily removes cursors preceded by whitespace;
+        # if there are no cursors left, it raises an error, does not
+        # continue to execute the mapping commands, and the error is eaten
+        # by the `try` command so no warning appears.
+        execute-keys -draft 'h<a-K>\h<ret>'
+        map window insert <tab> <c-n>
+        map window insert <s-tab> <c-p>
+        hook -once -always window InsertCompletionHide .* %{
+            unmap window insert <tab> <c-n>
+            unmap window insert <s-tab> <c-p>
+        }
+    }
+}
+
+# Add padding around cursor at screen edges:
+set-option global scrolloff 1,3
+
+# Highlight trailing whitespace
+add-highlighter global/ regex \h+$ 0:Error
+
+# Highlight TODO, FIXME, XXX, or NOTE
+add-highlighter global/ regex \b(TODO|FIXME|XXX|NOTE)\b 0:+rb
+
+# Clipboard settings
+map -docstring "yank the selection into the clipboard" global user y "<a-|> clip.exe<ret>"
+map -docstring "paste the clipboard" global user p "<a-!> powershell.exe Get-Clipboard | dos2unix | tr -d '\n'<ret>"
+
+declare-user-mode buffer
+map global buffer p ':buffer-previous<ret>' -docstring 'previous buffer'
+map global buffer b ':buffer ' -docstring 'change buffer'
+map global buffer n ':buffer-next<ret>' -docstring 'next buffer'
+map global user b ':enter-user-mode buffer<ret>' -docstring 'buffer-mode'
+
+declare-user-mode window
+map global window v ':tmux-terminal-horizontal kak -c %val{session}<ret>' -docstring 'Create a new vertical kak pane'
+map global window s ':tmux-terminal-vertical kak -c %val{session}<ret>' -docstring 'Create a new horizontal kak pane'
+map global user w ':enter-user-mode window<ret>' -docstring 'window-mode'
+
+declare-user-mode terminal
+map global terminal v ':tmux-repl-horizontal<ret>' -docstring 'Create a new vertical terminal pane'
+map global terminal s ':tmux-repl-vertical<ret>' -docstring 'Create a new horizontal terminal pane'
+map global terminal w ':tmux-repl-window<ret>' -docstring 'Create a new terminal window'
+map global user t ':enter-user-mode terminal<ret>' -docstring 'terminal-mode'
+
+# Use kj to return to normal mode
+hook global InsertChar j %{ try %{
+    exec -draft hH <a-k>kj<ret> d
+    exec <esc>
+}}
+
+# Automatically run goimports when saving a go file
+hook global BufSetOption filetype=go %{
+    set-option buffer formatcmd 'goimports'
+    hook -group go-auto-format buffer BufWritePre .* format
+}
+
+# Terminals that emulate VT102 detect c-/ as c-_, so this binding enables both of those combos 
+map global normal <c-_> ':comment-line<ret>'
+map global insert <c-_> '<esc>:comment-line<ret>i'

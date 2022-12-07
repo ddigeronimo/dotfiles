@@ -1,0 +1,146 @@
+# Uncomment this line to load the profiler:
+# zmodload zsh/zprof
+
+source ~/.zsh/git.zsh
+source ~/.zsh/docker.zsh
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+export VI_MODE_SET_CURSOR=true
+bindkey -v
+
+# History-based completion setup
+autoload -U compinit && compinit -i
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+HISTDUP=erase
+setopt APPEND_HISTORY
+setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
+setopt HIST_FIND_NO_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_SAVE_NO_DUPS
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+# Use up and down arrows for fuzzy history navigation
+autoload -U up-line-or-beginning-search
+zle -N up-line-or-beginning-search
+bindkey "^[OA" up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "^[OB" down-line-or-beginning-search
+
+export PKG_CONFIG_PATH=/usr/lib/pkgconfig
+
+export GOPRIVATE="github.com/seerai"
+
+# export PLAN9="/usr/local/plan9"
+# export PATH="$PATH:$PLAN9/bin"
+# export DISPLAY:=0
+# export LIBGL_ALWAYS_INDIRECT=1
+
+export COLORTERM=truecolor
+
+export BAT_THEME="Visual Studio Dark+"
+
+export WIN_TERM_CONFIG="/mnt/c/Users/ddige/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json"
+
+# This line will start the emacs daemon when emacsclient is invoked if it is
+# not already, according to:
+# https://stackoverflow.com/questions/5570451/how-to-start-emacs-server-only-if-it-is-not-started
+# export ALTERNATE_EDITOR=""
+
+export EDITOR='kak'
+
+export MANPAGER="sh -c 'sed -e s/.\\\\x08//g | bat -l man -p'"
+
+# Setup for emacs vterm
+# Requisite printf function
+# vterm_printf(){
+#     if [ -n "$TMUX" ] && ([ "${TERM%%-*}" = "tmux" ] || ["${TERM%%-*}" = "screen" ] ); then
+# 	# Tell tmux to pass the escape sequences through
+# 	printf "\ePtmux;\e\e]%s\007\e\\" "$1"
+#     elif [ "${TERM%%-*}" = "screen" ]; then
+# 	# GNU screen (screen, screen-256color, screen-256color-bce)
+# 	printf "\eP\e]%s\007\e\\" "$1"
+#     else
+# 	printf "\e]%s\e\\" "$1"
+#     fi
+# }
+# Needed for vterm-clear-scrollback command
+# if [[ "$INSIDE_EMACS" = 'vterm' ]]; then
+#     alias clear='vterm_printf "51;Evterm-clear-scrollback";tput clear'
+# fi
+# Needed for directory tracking and prompt tracking features
+# vterm_prompt_end(){
+#     vterm_printf "51;A$(whoami)@$(hostname):$(pwd)";
+# }
+# setopt PROMPT_SUBST
+# PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
+
+# kubectl autocompletion
+[[ $commands[kubectl] ]] && source <(kubectl completion zsh)
+
+alias fzfp="fzf --preview 'bat --style=numbers --color=always --line-range=:500 {}'"
+alias pipes="/usr/local/bin/pipes.sh"
+alias ls="ls --color"
+alias ipy="ipython --TerminalInteractiveShell.editing_mode=vi"
+
+# Use lg to launch lazygit and change dir to match last repo on exit
+lg() {
+    export LAZYGIT_NEW_DIR_FILE=~/.lazygit/newdir
+    lazygit "$@"
+    if [ -f $LAZYGIT_NEW_DIR_FILE ]; then
+            cd "$(cat $LAZYGIT_NEW_DIR_FILE)"
+            rm -f $LAZYGIT_NEW_DIR_FILE > /dev/null
+    fi
+}
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/dylan/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/dylan/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/dylan/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/dylan/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Pure prompt:
+# export PURE_PROMPT_SYMBOL="λ"
+# export PURE_PROMPT_VICMD_SYMBOL="Σ"
+# fpath+=($HOME/.zsh/pure)
+# autoload -U promptinit; promptinit
+# prompt pure
+
+# Super barebones prompt:
+PS1='%F{blue}%~ %(?.%F{green}.%F{red})λ%f '
+
+# # Barebones prompt w/ some git info:
+# # https://stackoverflow.com/a/1128583
+# setopt prompt_subst
+# autoload -Uz vcs_info
+# zstyle ':vcs_info:*' actionformats \
+#     '%F{5}%F{3}-%F{5}[%F{2}%b%F{3}|%F{1}%a%F{5}]%f '
+# zstyle ':vcs_info:*' formats       \
+#     '%F{5}%F{3}-%F{5}[%F{2}%b%F{5}]%f '
+# zstyle ':vcs_info:*' enable git
+# # or use pre_cmd, see man zshcontrib
+# vcs_info_wrapper() {
+#   vcs_info
+#   if [ -n "$vcs_info_msg_0_" ]; then
+#     echo "%{$fg[grey]%}${vcs_info_msg_0_}%{$reset_color%}$del"
+#   fi
+# }
+# PROMPT=$'%F{blue}%~ %(?.%F{green}.%F{red})$(vcs_info_wrapper)λ%f '
+# # RPROMPT=$'$(vcs_info_wrapper)'
+
+# Uncomment this line to start the profiler:
+# zprof

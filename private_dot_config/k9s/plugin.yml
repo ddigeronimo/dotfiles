@@ -1,0 +1,12 @@
+plugin:
+  bunyan:
+    shortCut: Ctrl-L
+    confirm: false
+    description: "Logs <Bunyan>"
+    scopes:
+      - pods
+    command: sh
+    background: false
+    args:
+      - -c
+      - "kubectl logs -f $NAME -n $NAMESPACE --context $CONTEXT | bunyan"

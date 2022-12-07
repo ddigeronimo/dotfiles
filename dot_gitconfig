@@ -1,0 +1,27 @@
+[user]
+	name = Dylan DiGeronimo
+
+[core]
+	editor = kak
+    pager = delta
+
+[init]
+	templateDir = /home/dylan/.git-template
+
+[url "ssh://git@github.com/"]
+ 	insteadOf = https://github.com/
+
+[github]
+	user = ddigeronimo
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default

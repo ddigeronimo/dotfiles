@@ -1,0 +1,27 @@
+[".config/kak/plugins/plug.kak"]
+    type = "archive"
+    url = "https://github.com/andreyorst/plug.kak"
+    exact = true
+    stripComponents = 1
+    refreshPeriod = "168h"
+
+[".tmux/plugs/tmux-resurrect"]
+    type="archive"
+    url = "https://github.com/tmux-plugins/tmux-resurrect/archive/master.tar.gz"
+    exact = true
+    stripComponents = 1
+    refreshPeriod = "168h"
+
+[".zsh/zsh-syntax-highlighting"]
+    type="archive"
+    url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
+    exact = true
+    stripComponents = 1
+    refreshPeriod = "168h"
+
+[".zsh/zsh-autosuggestions"]
+    type="archive"
+    url = "https://github.com/zsh-users/zsh-autosuggestions/archive/master.tar.gz"
+    exact = true
+    stripComponents = 1
+    refreshPeriod = "168h"

@@ -1,0 +1,9 @@
+!.config/kak/plugins/.keep
+.config/kak/plugins/*/**
+
+.config/k9s/config.yml
+
+.config/lazygit/state.yml
+
+!.zsh/*.zsh
+.zsh/**
