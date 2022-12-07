@@ -1,5 +1,8 @@
 # Installation
+## If chezmoi is not yet installed
 Run `sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ddigeronimo`
+## If chezmoi is already installed
+Run `chezmoi init --apply ddigeronimo`
 
 # Favorite software
 
@@ -30,6 +33,6 @@ glow https://github.com/charmbracelet/glow
 
 lazydocker https://github.com/jesseduffield/lazydocker
 
-# Configs not managed through Chezmoi
+# Configs not managed through chezmoi
 
 Currently, my [Vim](https://github.com/ddigeronimo/myvim), [Neovim](https://github.com/ddigeronimo/nvim), and [Emacs](https://github.com/ddigeronimo/.emacs.d) configs are all managed through separate GitHub repositories. I don't use these editors terribly often, so changes there are rare.
