@@ -2,7 +2,6 @@
 	name = Dylan DiGeronimo
 
 [core]
-	editor = kak
     pager = delta
 
 [init]
