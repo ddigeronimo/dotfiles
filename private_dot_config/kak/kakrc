@@ -93,6 +93,8 @@ plug "caksoylar/kakoune-focus" config %{
     }
 }
 
+plug "Crote/kakoune-ranger"
+
 # colorscheme codedark
 colorscheme desertex
 

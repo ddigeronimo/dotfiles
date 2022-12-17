@@ -47,11 +47,12 @@ export WIN_TERM_CONFIG="/mnt/c/Users/ddige/AppData/Local/Packages/Microsoft.Wind
 
 export MANPAGER="sh -c 'sed -e s/.\\\\x08//g | bat -l man -p'"
 
-if [ -n "$TMUX" ]; then
-    export EDITOR='kak'
-else
-    export EDITOR='nvim'
-fi
+# if [ -n "$TMUX" ]; then
+#     export EDITOR='kak'
+# else
+#     export EDITOR='nvim'
+# fi
+export EDITOR='nvim'
 
 export PATH=$HOME/.local/bin:$PATH
 

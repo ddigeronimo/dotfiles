@@ -275,11 +275,14 @@ intelephense.storagePath = "/tmp/intelephense"
 [language.python]
 filetypes = ["python"]
 roots = ["requirements.txt", "setup.py", ".git", ".hg"]
-command = "pyright-langserver"
-args = ["--stdio"]
-settings_section = "_"
+command = "pylsp"
+offset_encoding = "utf-8"
 [language.python.settings._]
+pylsp.plugins.jedi_completion.fuzzy = true
+# pylsp.plugins.rope_completion.enabled = true
+#
 # See https://github.com/python-lsp/python-lsp-server#configuration
+# Default is pycodestyle and pyflakes, see above for how to switch to flake8
 # pylsp.configurationSources = ["flake8"]
 
 [language.r]
