@@ -1,11 +1,15 @@
 # Uncomment this line to load the profiler:
 # zmodload zsh/zprof
 
+# Source completion scripts
 source ~/.zsh/git.zsh
 source ~/.zsh/docker.zsh
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+[[ $command[kubectl] ]] && source <(kubectl completion zsh)
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# Enable vi mode
 export VI_MODE_SET_CURSOR=true
 bindkey -v
 
@@ -22,71 +26,26 @@ setopt HIST_FIND_NO_DUPS
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_SAVE_NO_DUPS
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-# Use up and down arrows for fuzzy history navigation
+
+# Use up and down arrows for fuzzy history navigation, C-space to accept completion
 autoload -U up-line-or-beginning-search
 zle -N up-line-or-beginning-search
 bindkey "^[OA" up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
 zle -N down-line-or-beginning-search
 bindkey "^[OB" down-line-or-beginning-search
+bindkey "^ " autosuggest-accept
 
 export PKG_CONFIG_PATH=/usr/lib/pkgconfig
-
 export GOPRIVATE="github.com/seerai"
-
-# export PLAN9="/usr/local/plan9"
-# export PATH="$PATH:$PLAN9/bin"
-# export DISPLAY:=0
-# export LIBGL_ALWAYS_INDIRECT=1
-
 export COLORTERM=truecolor
-
-export BAT_THEME="Visual Studio Dark+"
-
+export BAT_THEME="Dracula"
 export WIN_TERM_CONFIG="/mnt/c/Users/ddige/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json"
-
 export MANPAGER="sh -c 'sed -e s/.\\\\x08//g | bat -l man -p'"
-
-# if [ -n "$TMUX" ]; then
-#     export EDITOR='kak'
-# else
-#     export EDITOR='nvim'
-# fi
-export EDITOR='nvim'
-
+export EDITOR='hx'
 export PATH=$HOME/.local/bin:$PATH
-
-# This line will start the emacs daemon when emacsclient is invoked if it is
-# not already, according to:
-# https://stackoverflow.com/questions/5570451/how-to-start-emacs-server-only-if-it-is-not-started
-# export ALTERNATE_EDITOR=""
-
-# Setup for emacs vterm
-# Requisite printf function
-# vterm_printf(){
-#     if [ -n "$TMUX" ] && ([ "${TERM%%-*}" = "tmux" ] || ["${TERM%%-*}" = "screen" ] ); then
-# 	# Tell tmux to pass the escape sequences through
-# 	printf "\ePtmux;\e\e]%s\007\e\\" "$1"
-#     elif [ "${TERM%%-*}" = "screen" ]; then
-# 	# GNU screen (screen, screen-256color, screen-256color-bce)
-# 	printf "\eP\e]%s\007\e\\" "$1"
-#     else
-# 	printf "\e]%s\e\\" "$1"
-#     fi
-# }
-# Needed for vterm-clear-scrollback command
-# if [[ "$INSIDE_EMACS" = 'vterm' ]]; then
-#     alias clear='vterm_printf "51;Evterm-clear-scrollback";tput clear'
-# fi
-# Needed for directory tracking and prompt tracking features
-# vterm_prompt_end(){
-#     vterm_printf "51;A$(whoami)@$(hostname):$(pwd)";
-# }
-# setopt PROMPT_SUBST
-# PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
-
-# kubectl autocompletion
-[[ $commands[kubectl] ]] && source <(kubectl completion zsh)
+export PATH=$PATH:$HOME/.linkerd2/bin
+export PATH=$PATH:$HOME/yaml-language-server/bin
 
 alias fzfp="fzf --preview 'bat --style=numbers --color=always --line-range=:500 {}'"
 alias pipes="/usr/local/bin/pipes.sh"
@@ -117,15 +76,6 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# Pure prompt:
-# export PURE_PROMPT_SYMBOL="λ"
-# export PURE_PROMPT_VICMD_SYMBOL="Σ"
-# fpath+=($HOME/.zsh/pure)
-# autoload -U promptinit; promptinit
-# prompt pure
 
 # Super barebones prompt:
 PS1='%F{blue}%~ %(?.%F{green}.%F{red})λ%f '
