@@ -1,0 +1,35 @@
+# theme = "ayu_mirage"
+theme = "dracula"
+
+# theme = "onelight"
+# theme = "emacs"
+# theme = "gruvbox_light"
+
+[editor]
+bufferline = "multiple"
+color-modes = true
+line-number = "relative"
+rulers = [120]
+true-color = true
+text-width = 120
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.statusline]
+left = ["mode", "spacer", "version-control", "spacer", "spinner"]
+center = ["file-name", "file-modification-indicator"]
+right = ["diagnostics", "selections", "position", "position-percentage", "file-encoding", "file-line-ending", "file-type"]
+
+[editor.file-picker]
+hidden = false
+
+[keys.normal]
+D = "kill_to_line_end"
+
+[keys.insert]
+C-p = "command_palette"
+# Currently not working until crossterm update:  https://github.com/helix-editor/helix/pull/4939, https://github.com/helix-editor/helix/issues/1085
+"C-backspace" = "delete_word_backward"
