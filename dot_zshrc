@@ -27,13 +27,15 @@ setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_SAVE_NO_DUPS
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
-# Use up and down arrows for fuzzy history navigation, C-space to accept completion
+# Use up and down arrows/Ctrl-p Ctrl-n for fuzzy history navigation, C-space to accept completion
 autoload -U up-line-or-beginning-search
 zle -N up-line-or-beginning-search
 bindkey "^[OA" up-line-or-beginning-search
+bindkey "^P" up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
 zle -N down-line-or-beginning-search
 bindkey "^[OB" down-line-or-beginning-search
+bindkey "^N" down-line-or-beginning-search
 bindkey "^ " autosuggest-accept
 
 export PKG_CONFIG_PATH=/usr/lib/pkgconfig
